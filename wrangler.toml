@@ -5,5 +5,5 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "salt-matcher-db"
-database_id = "salt-matcher-db-id"
+database_id = "fb0b173b-4a5b-4648-ad7c-9b7bcbfecf52"
 migrations_dir = "./migrations"
