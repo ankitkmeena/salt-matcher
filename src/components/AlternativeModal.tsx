@@ -57,21 +57,21 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
       ref={dialogRef}
       onCancel={onClose}
       onClick={handleBackdropClick}
-      className="backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs p-0 rounded-3xl max-w-4xl w-[94vw] bg-white shadow-2xl outline-none overflow-hidden my-auto mx-auto"
+      className="backdrop:bg-slate-900/40 backdrop:backdrop-blur-sm p-0 rounded-[32px] max-w-4xl w-[92vw] bg-white shadow-2xl outline-none overflow-hidden my-auto mx-auto"
       aria-labelledby="comparison-modal-title"
     >
       {/* Modal Header */}
-      <div className="px-7 py-6 bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 text-white flex items-center justify-between">
+      <div className="px-8 py-6 bg-[#183b28] text-white flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-xs">
+            <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-white/15 text-white backdrop-blur-xs">
               Bioequivalent Match
             </span>
-            <span className="text-xs text-emerald-100 font-medium">
+            <span className="text-xs text-emerald-200 font-medium">
               {alternatives.length} verified alternative{alternatives.length === 1 ? '' : 's'}
             </span>
           </div>
-          <h2 id="comparison-modal-title" className="text-xl sm:text-2xl font-black tracking-tight">
+          <h2 id="comparison-modal-title" className="text-xl sm:text-2xl font-bold tracking-tight">
             Active Salt Matching Analysis
           </h2>
         </div>
@@ -87,10 +87,10 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
       </div>
 
       {/* Modal Scrollable Body */}
-      <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto flex flex-col gap-7">
+      <div className="p-7 sm:p-10 max-h-[80vh] overflow-y-auto flex flex-col gap-8">
         {/* NTI Warning Banner if applicable */}
         {nti_alert && (
-          <div className="p-5 rounded-2xl bg-amber-50/90 text-amber-950 flex items-start gap-3.5 shadow-xs">
+          <div className="p-6 rounded-3xl bg-[#fffbf0] text-amber-950 flex items-start gap-4 shadow-2xs">
             <ShieldAlert className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
             <div className="flex flex-col gap-1 text-sm">
               <h4 className="font-bold text-amber-900">
@@ -101,13 +101,13 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
           </div>
         )}
 
-        {/* 1. Current Prescribed Medicine Overview Group */}
-        <div className="p-6 rounded-3xl bg-slate-50/90 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        {/* 1. Current Prescribed Medicine Overview */}
+        <div className="p-7 sm:p-8 rounded-3xl bg-[#f5f6f4] flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Current Prescribed Medicine
             </span>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
               {target.name}
             </h3>
             <p className="text-xs text-slate-500 font-medium">
@@ -115,18 +115,18 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
               {target.dosage_form} ({target.release_mechanism})
             </p>
             
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-xs font-semibold text-slate-800 shadow-2xs w-fit mt-1">
-              <Pill className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-xs font-semibold text-slate-800 shadow-2xs w-fit mt-1">
+              <Pill className="w-3.5 h-3.5 text-[#27583d]" />
               <span>Exact Salt: {target.composition_summary}</span>
             </div>
           </div>
 
-          <div className="shrink-0 flex flex-col sm:items-end bg-white sm:bg-transparent p-4 sm:p-0 rounded-2xl shadow-xs sm:shadow-none">
-            <span className="text-xs text-slate-500 font-semibold">Current Retail Price</span>
-            <div className="text-3xl font-black text-slate-900 mt-0.5">
+          <div className="shrink-0 flex flex-col sm:items-end bg-white sm:bg-transparent p-5 sm:p-0 rounded-2xl shadow-xs sm:shadow-none">
+            <span className="text-xs text-slate-400 font-medium">Current Retail Price</span>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-0.5">
               ₹{target.price_inr.toFixed(2)}
             </div>
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-slate-400">
               ₹{target.price_per_unit.toFixed(2)} per unit
             </span>
           </div>
@@ -134,10 +134,10 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
 
         {/* 2. Maximum Savings Hero Card */}
         {bestAlt && max_savings_percentage > 0 && (
-          <div className="p-7 rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-xl shadow-emerald-700/20 relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="flex flex-col gap-3 relative z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black bg-white text-emerald-800 shadow-xs w-fit">
-                <Sparkles className="w-3.5 h-3.5" />
+          <div className="p-8 sm:p-10 rounded-[32px] bg-[#183b28] text-white shadow-xl shadow-[#183b28]/15 relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex flex-col gap-3.5 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black bg-white text-[#183b28] shadow-xs w-fit">
+                <Sparkles className="w-3.5 h-3.5 text-[#27583d]" />
                 <span>Recommended Generic Formulation</span>
               </div>
 
@@ -150,19 +150,19 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
               </p>
 
               <div className="flex flex-wrap items-center gap-3 text-xs font-bold pt-1">
-                <span className="px-3.5 py-1.5 rounded-xl bg-emerald-900/40 text-emerald-100">
+                <span className="px-4 py-2 rounded-full bg-white/10 text-emerald-100">
                   Monthly Saving: ₹{bestAlt.monthly_savings_inr.toFixed(2)}
                 </span>
-                <span className="px-3.5 py-1.5 rounded-xl bg-white/20 text-white">
+                <span className="px-4 py-2 rounded-full bg-white/20 text-white">
                   Annual Household Saving: ₹{bestAlt.annual_savings_inr.toFixed(2)}
                 </span>
               </div>
             </div>
 
-            <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-4 bg-emerald-950/30 p-5 rounded-2xl backdrop-blur-xs">
+            <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-5 bg-[#0f271a] p-6 rounded-3xl">
               <div className="flex flex-col lg:items-end">
                 <span className="text-xs text-emerald-200 font-medium">Generic Price</span>
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex items-baseline gap-2">
                   <span className="text-3xl sm:text-4xl font-black">₹{bestAlt.medicine.price_inr.toFixed(2)}</span>
                   <span className="text-xs text-emerald-200">
                     ({bestAlt.medicine.package_size} units)
@@ -173,7 +173,7 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                 </span>
               </div>
 
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-black bg-emerald-300 text-emerald-950">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-sm font-black bg-emerald-300 text-emerald-950">
                 <TrendingDown className="w-4 h-4" />
                 Save {max_savings_percentage}%
               </div>
@@ -184,7 +184,7 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                   onAddToBasket(bestAlt.medicine);
                   onClose();
                 }}
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-white text-emerald-950 font-bold text-xs rounded-xl hover:bg-emerald-50 active:scale-98 transition-all shadow-md min-h-[44px]"
+                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-[#183b28] font-bold text-xs rounded-full hover:bg-emerald-50 active:scale-95 transition-all shadow-md min-h-[44px]"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add to Prescription Basket</span>
@@ -196,30 +196,30 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
         {/* 3. All Verified Alternatives Group */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-base font-extrabold text-slate-900">
+            <h4 className="text-lg font-bold text-slate-900 tracking-tight">
               All Equivalent Formulations
             </h4>
-            <span className="text-xs font-medium text-slate-500">
+            <span className="text-xs font-medium text-slate-400">
               Sorted by price savings
             </span>
           </div>
 
           {alternatives.length === 0 ? (
-            <div className="p-8 text-center rounded-3xl bg-slate-50 text-slate-500 flex flex-col gap-1">
+            <div className="p-8 text-center rounded-3xl bg-[#f5f6f4] text-slate-500 flex flex-col gap-1">
               <p className="font-bold">No direct salt matches currently in database.</p>
               <p className="text-xs">This formulation might be off-patent or require custom compounding.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3.5">
               {alternatives.map((alt) => {
                 const isJan = alt.medicine.is_jan_aushadhi === 1;
                 return (
                   <div
                     key={alt.medicine.id}
-                    className={`p-5 rounded-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                    className={`p-6 rounded-3xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 ${
                       isJan
-                        ? 'bg-emerald-50/70'
-                        : 'bg-slate-50/70 hover:bg-slate-100/70'
+                        ? 'bg-[#eef5f1]'
+                        : 'bg-[#f7f8f6] hover:bg-[#f2f4f0]'
                     }`}
                   >
                     <div className="flex flex-col gap-1.5">
@@ -228,11 +228,11 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                           {alt.medicine.name}
                         </h5>
                         {isJan ? (
-                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                          <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#183b28] text-white">
                             Jan Aushadhi
                           </span>
                         ) : (
-                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-100 text-teal-800">
+                          <span className="px-3 py-0.5 rounded-full text-[11px] font-semibold bg-stone-200 text-stone-800">
                             Generic-Branded
                           </span>
                         )}
@@ -246,7 +246,7 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                       </p>
 
                       <div className="text-xs text-slate-600 flex items-center gap-3 pt-0.5">
-                        <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+                        <span className="flex items-center gap-1.5 text-[#183b28] font-bold">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Identical Active Salt
                         </span>
                         <span>•</span>
@@ -254,16 +254,16 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between md:justify-end gap-5 shrink-0 pt-2 md:pt-0">
+                    <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 pt-2 md:pt-0">
                       <div className="flex flex-col text-left md:text-right">
-                        <div className="text-xl font-extrabold text-slate-900">
+                        <div className="text-2xl font-black text-slate-900">
                           ₹{alt.medicine.price_inr.toFixed(2)}
                         </div>
-                        <div className="text-xs text-slate-500 font-medium">
+                        <div className="text-xs text-slate-400 font-medium">
                           ₹{alt.medicine.price_per_unit.toFixed(2)} / unit
                         </div>
                         {alt.percentage_savings > 0 && (
-                          <span className="inline-block mt-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md w-fit md:ml-auto">
+                          <span className="inline-block mt-1 text-xs font-bold text-[#183b28] bg-white px-2.5 py-0.5 rounded-full w-fit md:ml-auto">
                             Save {alt.percentage_savings}%
                           </span>
                         )}
@@ -275,9 +275,9 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                           onAddToBasket(alt.medicine);
                           onClose();
                         }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-emerald-800 bg-white hover:bg-emerald-100 rounded-xl transition-all shadow-2xs min-h-[44px]"
+                        className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-[#183b28] bg-white hover:bg-stone-100 rounded-full transition-all shadow-xs min-h-[44px]"
                       >
-                        <Plus className="w-4 h-4 text-emerald-600" />
+                        <Plus className="w-4 h-4" />
                         <span>Add to Rx</span>
                       </button>
                     </div>
@@ -288,8 +288,8 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
           )}
         </div>
 
-        {/* 4. Regulatory & Bioequivalence Transparency Note */}
-        <div className="p-4 rounded-2xl bg-slate-100/80 text-slate-600 text-xs flex items-start gap-3">
+        {/* 4. Regulatory Transparency Note */}
+        <div className="p-5 rounded-2xl bg-[#f4f4f2] text-slate-600 text-xs flex items-start gap-3.5">
           <HelpCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
             <strong className="text-slate-800 font-semibold">Bioequivalence Standard:</strong> Under Indian CDSCO and international WHO-GMP standards, certified generic medicines contain the identical active pharmaceutical ingredient (API) in the same dosage, safety profile, efficacy, and intended use as branded products.
