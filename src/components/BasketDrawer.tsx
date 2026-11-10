@@ -67,17 +67,17 @@ export const BasketDrawer: React.FC<BasketDrawerProps> = ({
         ref={dialogRef}
         onCancel={onClose}
         onClick={handleBackdropClick}
-        className="backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs p-0 rounded-3xl max-w-3xl w-[94vw] bg-white shadow-2xl border border-slate-200 outline-none overflow-hidden my-auto mx-auto"
+        className="backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs p-0 rounded-3xl max-w-3xl w-[94vw] bg-white shadow-2xl outline-none overflow-hidden my-auto mx-auto"
         aria-labelledby="basket-modal-title"
       >
         {/* Header */}
-        <div className="px-6 py-5 bg-gradient-to-r from-emerald-700 to-teal-800 text-white flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-bold">
+        <div className="px-7 py-6 bg-gradient-to-r from-emerald-700 to-teal-800 text-white flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center font-black text-sm">
               Rx
             </div>
-            <div>
-              <h2 id="basket-modal-title" className="text-xl font-bold">
+            <div className="flex flex-col gap-0.5">
+              <h2 id="basket-modal-title" className="text-xl font-bold tracking-tight">
                 Monthly Prescription Basket
               </h2>
               <p className="text-xs text-emerald-100">
@@ -86,12 +86,12 @@ export const BasketDrawer: React.FC<BasketDrawerProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             {basket.length > 0 && (
               <button
                 type="button"
                 onClick={onClearBasket}
-                className="px-3 py-1.5 text-xs font-semibold text-rose-100 hover:text-white hover:bg-rose-500/30 rounded-lg transition-colors"
+                className="px-3.5 py-1.5 text-xs font-bold text-rose-100 hover:text-white hover:bg-rose-500/30 rounded-xl transition-colors"
                 title="Clear all medicines"
               >
                 Clear
@@ -100,7 +100,7 @@ export const BasketDrawer: React.FC<BasketDrawerProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2.5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Close basket"
             >
               <X className="w-5 h-5" />
@@ -109,157 +109,157 @@ export const BasketDrawer: React.FC<BasketDrawerProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6">
+        <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto flex flex-col gap-6">
           {basket.length === 0 ? (
-            <div className="text-center py-12 px-4">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-100">
+            <div className="text-center py-16 px-4 flex flex-col items-center gap-3">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1">
                 <Sparkles className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800">Your Rx Basket is empty</h3>
-              <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-                Search your regular monthly medicines (e.g., blood pressure, diabetes, thyroid) and click &quot;Add to Rx&quot; to see how much your household can save every month.
+              <h3 className="text-lg font-extrabold text-slate-800">Your Rx Basket is empty</h3>
+              <p className="text-sm text-slate-500 max-w-sm leading-relaxed">
+                Search your regular monthly medicines (e.g., blood pressure, diabetes, thyroid) and click &quot;Add to Rx&quot; to calculate your household savings.
               </p>
             </div>
           ) : (
             <>
               {/* Grand Total Savings Callout Banner */}
-              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 text-white shadow-xl shadow-emerald-700/20">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <span className="text-xs uppercase tracking-wider font-extrabold text-emerald-200">
-                      Total Household Impact
-                    </span>
-                    <div className="text-3xl sm:text-4xl font-black mt-1 flex items-baseline space-x-2">
-                      <span>₹{summary.monthly_savings.toFixed(2)}</span>
-                      <span className="text-sm font-semibold text-emerald-200">saved / month</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-emerald-100 mt-1 font-medium">
-                      That&apos;s <strong className="text-white font-extrabold">₹{summary.annual_savings.toFixed(2)}</strong> back in your family&apos;s pocket each year ({summary.overall_savings_percentage}% overall reduction).
-                    </p>
+              <div className="p-7 rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 text-white shadow-xl shadow-emerald-700/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-xs uppercase tracking-wider font-extrabold text-emerald-200">
+                    Total Household Impact
+                  </span>
+                  <div className="text-3xl sm:text-4xl font-black flex items-baseline gap-2">
+                    <span>₹{summary.monthly_savings.toFixed(2)}</span>
+                    <span className="text-sm font-semibold text-emerald-200">saved / month</span>
                   </div>
+                  <p className="text-xs sm:text-sm text-emerald-100 font-medium">
+                    That&apos;s <strong className="text-white font-black">₹{summary.annual_savings.toFixed(2)}</strong> saved every year ({summary.overall_savings_percentage}% reduction).
+                  </p>
+                </div>
 
-                  <div className="p-3.5 bg-black/20 rounded-2xl border border-white/20 text-xs space-y-1.5 shrink-0">
-                    <div className="flex justify-between gap-4">
-                      <span className="text-emerald-200">Current Branded:</span>
-                      <span className="font-bold text-white line-through opacity-80">
-                        ₹{summary.total_current_monthly.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-emerald-200">Generic Basket:</span>
-                      <span className="font-extrabold text-emerald-300">
-                        ₹{summary.total_optimized_monthly.toFixed(2)}
-                      </span>
-                    </div>
+                <div className="p-4 bg-black/20 rounded-2xl backdrop-blur-xs text-xs flex flex-col gap-2 shrink-0">
+                  <div className="flex justify-between gap-5">
+                    <span className="text-emerald-200">Current Branded:</span>
+                    <span className="font-bold text-white line-through opacity-80">
+                      ₹{summary.total_current_monthly.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-5">
+                    <span className="text-emerald-200">Generic Basket:</span>
+                    <span className="font-extrabold text-emerald-300">
+                      ₹{summary.total_optimized_monthly.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* NTI Warnings Alert */}
               {summary.nti_warnings.length > 0 && (
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-xs flex items-start space-x-3">
+                <div className="p-4 rounded-2xl bg-amber-50/90 text-amber-950 text-xs flex items-start gap-3">
                   <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                  <div>
+                  <div className="leading-relaxed">
                     <strong className="font-bold">Prescription Review Note:</strong> Your basket includes Narrow Therapeutic Index (NTI) medications ({summary.nti_warnings.map((w) => w.medicine_name).join(', ')}). Share this report with your prescribing physician to approve substitutions with standard lab follow-up.
                   </div>
                 </div>
               )}
 
               {/* Breakdown List */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
                   Medicines in Monthly Routine ({basket.length})
                 </h4>
 
-                {summary.breakdown.map((row) => (
-                  <div
-                    key={row.medicine.id}
-                    className="p-4 rounded-2xl border border-slate-200 bg-white shadow-2xs space-y-3"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <h5 className="font-bold text-slate-900">{row.medicine.name}</h5>
-                          {row.is_nti && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
-                              NTI
+                <div className="flex flex-col gap-3.5">
+                  {summary.breakdown.map((row) => (
+                    <div
+                      key={row.medicine.id}
+                      className="p-5 rounded-3xl bg-slate-50/80 flex flex-col gap-3.5"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-2">
+                            <h5 className="font-bold text-slate-900 text-base">{row.medicine.name}</h5>
+                            {row.is_nti && (
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                                NTI
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500">
+                            {row.medicine.composition_summary} • {row.medicine.dosage_form}
+                          </p>
+                        </div>
+
+                        {/* Strip Counter & Delete */}
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex items-center rounded-xl bg-white shadow-2xs p-1">
+                            <button
+                              type="button"
+                              onClick={() => onUpdateStrips(row.medicine.id, -1)}
+                              className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                              aria-label={`Decrease quantity of ${row.medicine.name}`}
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="px-3 text-xs font-bold text-slate-800">
+                              {row.strips_per_month} {row.strips_per_month === 1 ? 'pack' : 'packs'}
                             </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-slate-500">
-                          {row.medicine.composition_summary} • {row.medicine.dosage_form}
-                        </p>
-                      </div>
+                            <button
+                              type="button"
+                              onClick={() => onUpdateStrips(row.medicine.id, 1)}
+                              className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                              aria-label={`Increase quantity of ${row.medicine.name}`}
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
 
-                      {/* Strip Counter & Delete */}
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                           <button
                             type="button"
-                            onClick={() => onUpdateStrips(row.medicine.id, -1)}
-                            className="p-1.5 text-slate-600 hover:bg-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                            aria-label={`Decrease quantity of ${row.medicine.name}`}
+                            onClick={() => onRemoveItem(row.medicine.id)}
+                            className="p-2 text-slate-400 hover:text-rose-600 transition-colors rounded-lg hover:bg-rose-50"
+                            aria-label={`Remove ${row.medicine.name} from basket`}
                           >
-                            <Minus className="w-3.5 h-3.5" />
-                          </button>
-                          <span className="px-3 text-xs font-bold text-slate-800">
-                            {row.strips_per_month} {row.strips_per_month === 1 ? 'pack' : 'packs'}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => onUpdateStrips(row.medicine.id, 1)}
-                            className="p-1.5 text-slate-600 hover:bg-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                            aria-label={`Increase quantity of ${row.medicine.name}`}
-                          >
-                            <Plus className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-
-                        <button
-                          type="button"
-                          onClick={() => onRemoveItem(row.medicine.id)}
-                          className="p-2 text-slate-400 hover:text-rose-600 transition-colors"
-                          aria-label={`Remove ${row.medicine.name} from basket`}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
                       </div>
-                    </div>
 
-                    {/* Compare with Alternative */}
-                    <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                      <div>
-                        <div className="flex items-center space-x-1.5 text-emerald-900 font-bold">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                          <span>Switch to: {row.alternative.name}</span>
+                      {/* Compare with Alternative Card */}
+                      <div className="p-4 rounded-2xl bg-white shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-1.5 text-emerald-900 font-bold">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <span>Switch to: {row.alternative.name}</span>
+                          </div>
+                          <p className="text-[11px] text-emerald-700">
+                            Mfg: {row.alternative.manufacturer} (Same Active Salt & Strength)
+                          </p>
                         </div>
-                        <p className="text-[11px] text-emerald-700 mt-0.5">
-                          Mfg: {row.alternative.manufacturer} (Same Active Salt & Strength)
-                        </p>
-                      </div>
 
-                      <div className="flex items-center space-x-3 text-right">
-                        <div>
-                          <span className="text-[11px] text-slate-500 block">Monthly saving</span>
-                          <span className="font-extrabold text-emerald-800 text-sm">
-                            ₹{row.savings.toFixed(2)}
+                        <div className="flex items-center gap-3 self-end sm:self-auto">
+                          <div className="flex flex-col text-right">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">Monthly saving</span>
+                            <span className="font-extrabold text-emerald-700 text-sm">
+                              ₹{row.savings.toFixed(2)}
+                            </span>
+                          </div>
+                          <span className="px-2.5 py-1 rounded-full font-black text-[11px] bg-emerald-100 text-emerald-900">
+                            Save {row.percentage_savings}%
                           </span>
                         </div>
-                        <span className="px-2 py-0.5 rounded-full font-black text-[11px] bg-emerald-200 text-emerald-900">
-                          Save {row.percentage_savings}%
-                        </span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-bold text-sm shadow-xs transition-colors min-h-[44px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-bold text-sm transition-colors min-h-[44px]"
                 >
                   <Printer className="w-4 h-4 text-emerald-600" />
                   <span>Print Doctor Consultation Slip</span>
@@ -268,7 +268,7 @@ export const BasketDrawer: React.FC<BasketDrawerProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-1.5 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition-all min-h-[44px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition-all min-h-[44px]"
                 >
                   <span>Continue Browsing</span>
                   <ArrowRight className="w-4 h-4" />

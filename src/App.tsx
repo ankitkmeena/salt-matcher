@@ -142,7 +142,7 @@ export const App: React.FC = () => {
   const basketItemIds = useMemo(() => new Set(basket.map((b) => b.medicine.id)), [basket]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
       {/* Navbar */}
       <Navbar
         basket={basket}
@@ -150,8 +150,8 @@ export const App: React.FC = () => {
         onOpenParser={() => setIsParserOpen(true)}
       />
 
-      <main className="flex-1">
-        {/* Search & Hero */}
+      <main className="flex-1 flex flex-col gap-12 sm:gap-16">
+        {/* Search & Hero Area */}
         <SearchHeader
           query={query}
           onQueryChange={setQuery}
@@ -162,14 +162,14 @@ export const App: React.FC = () => {
           onToggleOnlyGenerics={() => setOnlyGenerics(!onlyGenerics)}
         />
 
-        {/* Results Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" aria-label="Medicine search results">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+        {/* Medicines Catalog Grid Section */}
+        <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8" aria-label="Medicine search results">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 {selectedCategory === 'All' ? 'All Formulations' : `${selectedCategory} Formulations`}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-500 font-medium">
                 Showing {filteredMedicines.length} verified pharmaceutical product{filteredMedicines.length === 1 ? '' : 's'}
               </p>
             </div>
@@ -178,7 +178,7 @@ export const App: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setQuery('')}
-                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                className="text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 px-4 py-2 rounded-xl transition-colors min-h-[40px]"
               >
                 Clear Search Filter
               </button>
@@ -186,17 +186,17 @@ export const App: React.FC = () => {
           </div>
 
           {filteredMedicines.length === 0 ? (
-            <div className="text-center py-16 px-4 bg-white rounded-3xl border border-slate-200">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-20 px-6 bg-white rounded-3xl shadow-xs flex flex-col items-center gap-3">
+              <div className="w-16 h-16 rounded-3xl bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
                 <Sparkles className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800">No matching medicines found</h3>
-              <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
-                Try searching for the active salt name (e.g. &quot;Metformin&quot;, &quot;Amoxicillin&quot;) or explore one of the popular chronic condition categories above.
+              <h3 className="text-xl font-extrabold text-slate-800">No matching medicines found</h3>
+              <p className="text-sm text-slate-500 max-w-md leading-relaxed">
+                Try searching for the active salt name (e.g. &quot;Metformin&quot;, &quot;Amoxicillin&quot;) or explore one of the condition categories above.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredMedicines.map((medicine) => (
                 <MedicineCard
                   key={medicine.id}
@@ -218,23 +218,23 @@ export const App: React.FC = () => {
       {basket.length > 0 && !isBasketOpen && (
         <aside
           aria-label="Prescription savings floating action bar"
-          className="fixed bottom-5 inset-x-4 sm:inset-x-auto sm:right-6 z-30 flex justify-center"
+          className="fixed bottom-6 inset-x-4 sm:inset-x-auto sm:right-8 z-30 flex justify-center"
         >
           <button
             type="button"
             onClick={() => setIsBasketOpen(true)}
-            className="flex items-center space-x-3 px-5 py-3.5 bg-slate-900 text-white rounded-2xl shadow-2xl shadow-slate-900/50 hover:bg-slate-800 active:scale-98 transition-all border border-slate-700/60 min-h-[48px]"
+            className="flex items-center gap-3.5 p-2.5 pl-4 pr-5 bg-slate-900/95 backdrop-blur-md text-white rounded-full shadow-2xl shadow-slate-900/40 hover:bg-slate-900 active:scale-98 transition-all min-h-[52px]"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm">
+            <div className="w-8 h-8 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm">
               {basket.reduce((s, i) => s + i.strips_per_month, 0)}
             </div>
-            <div className="text-left text-xs">
-              <div className="font-extrabold text-white text-sm">Review Rx Savings Basket</div>
-              <div className="text-emerald-400 font-semibold">
+            <div className="flex flex-col text-left">
+              <span className="font-extrabold text-white text-xs sm:text-sm">Review Rx Savings Basket</span>
+              <span className="text-emerald-400 font-semibold text-[11px]">
                 Tap to view monthly & yearly family savings
-              </div>
+              </span>
             </div>
-            <ShoppingBag className="w-5 h-5 text-emerald-400 ml-2" />
+            <ShoppingBag className="w-5 h-5 text-emerald-400 shrink-0 ml-1" />
           </button>
         </aside>
       )}
@@ -265,41 +265,41 @@ export const App: React.FC = () => {
       />
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center space-x-2 text-white font-extrabold text-lg mb-2">
+      <footer className="bg-slate-950 text-slate-400 py-16 sm:py-20 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-white font-extrabold text-xl">
                 <span>Salt<span className="text-emerald-400">Match</span></span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                 Empowering patients and families through pharmaceutical salt transparency and certified generic price comparisons.
               </p>
             </div>
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
+            <div className="flex flex-col gap-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
                 Cloud Architecture
               </h4>
-              <ul className="text-xs space-y-2 text-slate-400">
-                <li className="flex items-center space-x-2">
+              <ul className="text-xs flex flex-col gap-2.5 text-slate-400">
+                <li className="flex items-center gap-2.5">
                   <Database className="w-4 h-4 text-emerald-400" />
                   <span>Cloudflare D1 (SQLite Edge Database)</span>
                 </li>
-                <li className="flex items-center space-x-2">
+                <li className="flex items-center gap-2.5">
                   <Cloud className="w-4 h-4 text-emerald-400" />
                   <span>Cloudflare Pages & Pages Functions</span>
                 </li>
-                <li className="flex items-center space-x-2">
+                <li className="flex items-center gap-2.5">
                   <GitBranch className="w-4 h-4 text-emerald-400" />
                   <span>GitHub Actions Automated Edge CI/CD</span>
                 </li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
-                Clinical Safety & Disclaimer
+            <div className="flex flex-col gap-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Clinical Safety & Ethics
               </h4>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 SaltMatch is an educational and price transparency tool. It does not provide medical diagnosis or replace personalized consultation with a licensed doctor or pharmacist. Never stop or alter prescribed dosage without professional medical consent.
@@ -307,11 +307,11 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>© {new Date().getFullYear()} SaltMatch. Open Source Healthcare Initiative.</p>
-            <div className="flex items-center space-x-4">
-              <span className="inline-flex items-center text-emerald-400">
-                <ShieldCheck className="w-3.5 h-3.5 mr-1" /> WHO-GMP Bioequivalence Compliant
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>© {new Date().getFullYear()} SaltMatch. Universal Healthcare Affordability Initiative.</p>
+            <div className="flex items-center gap-4">
+              <span className="inline-flex items-center gap-1.5 text-emerald-400 font-semibold">
+                <ShieldCheck className="w-4 h-4" /> WHO-GMP Bioequivalence Compliant
               </span>
             </div>
           </div>

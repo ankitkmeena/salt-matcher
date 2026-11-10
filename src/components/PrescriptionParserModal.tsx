@@ -83,30 +83,32 @@ export const PrescriptionParserModal: React.FC<PrescriptionParserModalProps> = (
       ref={dialogRef}
       onCancel={onClose}
       onClick={handleBackdropClick}
-      className="backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs p-0 rounded-3xl max-w-2xl w-[94vw] bg-white shadow-2xl border border-slate-200 outline-none overflow-hidden my-auto mx-auto"
+      className="backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs p-0 rounded-3xl max-w-2xl w-[94vw] bg-white shadow-2xl outline-none overflow-hidden my-auto mx-auto"
       aria-labelledby="parser-modal-title"
     >
-      <div className="px-6 py-5 bg-gradient-to-r from-emerald-700 to-teal-800 text-white flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+      {/* Header */}
+      <div className="px-7 py-6 bg-gradient-to-r from-emerald-700 to-teal-800 text-white flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
           <FileText className="w-5 h-5 text-emerald-300" />
-          <h2 id="parser-modal-title" className="text-xl font-bold">
+          <h2 id="parser-modal-title" className="text-xl font-bold tracking-tight">
             Paste & Parse Prescription
           </h2>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+          className="p-2.5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Close prescription parser"
         >
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="p-6 max-h-[75vh] overflow-y-auto space-y-5">
-        <div>
-          <label htmlFor="prescription-text-input" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-            Paste Prescription Text or Doctor Notes
+      {/* Content */}
+      <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="prescription-text-input" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Paste Doctor Prescription Notes or Text
           </label>
           <textarea
             id="prescription-text-input"
@@ -114,16 +116,16 @@ export const PrescriptionParserModal: React.FC<PrescriptionParserModalProps> = (
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="e.g.&#10;Tab Glycomet GP 2 - 1 OD&#10;Tab Telma 40 - 1 OD&#10;Tab Atorva 20 - 1 HS"
-            className="w-full p-4 text-sm text-slate-800 bg-slate-50 border border-slate-300 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+            className="w-full p-4 text-sm text-slate-800 bg-slate-50/90 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-mono shadow-2xs resize-none"
             autoCorrect="off"
             spellCheck="false"
           />
         </div>
 
         {/* Preset Sample Quick Buttons */}
-        <div>
-          <span className="text-xs font-semibold text-slate-500 block mb-2">
-            Or try a sample chronic prescription:
+        <div className="flex flex-col gap-2.5">
+          <span className="text-xs font-semibold text-slate-400">
+            Or try a pre-filled sample prescription:
           </span>
           <div className="flex flex-wrap gap-2">
             {SAMPLE_PRESCRIPTIONS.map((preset) => (
@@ -131,7 +133,7 @@ export const PrescriptionParserModal: React.FC<PrescriptionParserModalProps> = (
                 key={preset.title}
                 type="button"
                 onClick={() => setText(preset.text)}
-                className="px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 transition-colors"
               >
                 {preset.title}
               </button>
@@ -141,26 +143,26 @@ export const PrescriptionParserModal: React.FC<PrescriptionParserModalProps> = (
 
         {/* Matched Medicines Preview */}
         {parsed.length > 0 && (
-          <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-3">
-            <div className="flex items-center justify-between text-xs font-bold text-emerald-900">
-              <span className="flex items-center space-x-1">
+          <div className="p-5 rounded-3xl bg-emerald-50/70 flex flex-col gap-4">
+            <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
+              <span className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-emerald-600" />
-                <span>Found {parsed.length} Recognized Medicine{parsed.length === 1 ? '' : 's'}</span>
+                <span>Found {parsed.length} Recognized Molecule{parsed.length === 1 ? '' : 's'}</span>
               </span>
-              <span>Ready to compare</span>
+              <span className="text-emerald-700">Ready to compare</span>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               {parsed.map((med) => (
                 <div
                   key={med.id}
-                  className="p-2.5 rounded-xl bg-white border border-emerald-100 flex items-center justify-between text-xs"
+                  className="p-3.5 rounded-2xl bg-white shadow-2xs flex items-center justify-between text-xs"
                 >
-                  <div>
-                    <strong className="text-slate-900">{med.name}</strong>
+                  <div className="flex flex-col gap-0.5">
+                    <strong className="text-slate-900 font-bold">{med.name}</strong>
                     <p className="text-slate-500 text-[11px]">{med.composition_summary}</p>
                   </div>
-                  <span className="font-bold text-slate-800">₹{med.price_inr}</span>
+                  <span className="font-black text-slate-800 text-sm">₹{med.price_inr.toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -168,7 +170,7 @@ export const PrescriptionParserModal: React.FC<PrescriptionParserModalProps> = (
             <button
               type="button"
               onClick={handleImport}
-              className="w-full inline-flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition-all min-h-[44px]"
+              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition-all min-h-[44px]"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Import All to Rx Savings Basket</span>
