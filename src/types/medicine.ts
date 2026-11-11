@@ -16,6 +16,9 @@ export interface Medicine {
   normalized_salt_key: string;
   indications?: string;
   prescription_required: number;
+  pmbi_code?: string;
+  last_verified?: string;
+  cdsco_approval?: string;
 }
 
 export interface Salt {

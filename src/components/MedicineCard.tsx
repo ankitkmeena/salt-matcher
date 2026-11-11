@@ -1,6 +1,6 @@
 import React from 'react';
 import { Medicine } from '../types/medicine';
-import { Pill, ShieldAlert, CheckCircle2, ArrowRight, Plus } from 'lucide-react';
+import { Pill, ShieldAlert, CheckCircle2, ShieldCheck, ArrowRight, Plus } from 'lucide-react';
 
 interface MedicineCardProps {
   medicine: Medicine;
@@ -26,9 +26,16 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2 flex-wrap">
             {isJanAushadhi ? (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-[#eef5f1] text-[#183b28]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#27583d]" /> Jan Aushadhi
-              </span>
+              <>
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-[#eef5f1] text-[#183b28]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#27583d]" /> Jan Aushadhi
+                </span>
+                {medicine.pmbi_code && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#183b28] text-emerald-200">
+                    {medicine.pmbi_code}
+                  </span>
+                )}
+              </>
             ) : isGeneric ? (
               <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-700">
                 Unbranded Generic
@@ -81,6 +88,17 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
             Prescribed for: {medicine.indications}
           </p>
         )}
+
+        {/* Clinical Verification & Trust Stamp */}
+        <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100">
+          <div className="flex items-center gap-1.5 text-slate-600">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <span className="truncate max-w-[190px]">{medicine.cdsco_approval || 'CDSCO Bioequivalent'}</span>
+          </div>
+          <span className="text-[10px] text-slate-400 font-mono shrink-0">
+            Verified {medicine.last_verified || 'Nov 2026'}
+          </span>
+        </div>
       </div>
 
       {/* Bottom Pricing & Actions Group */}

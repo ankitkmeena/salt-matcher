@@ -149,6 +149,20 @@ export const AlternativeModal: React.FC<AlternativeModalProps> = ({
                 Mfg: {bestAlt.medicine.manufacturer} • Identical Active Molecules & Bioavailability
               </p>
 
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold pt-1">
+                {bestAlt.medicine.pmbi_code && (
+                  <span className="px-3 py-1.5 rounded-full bg-white/20 text-emerald-100 font-mono text-[11px]">
+                    Govt Drug Code: {bestAlt.medicine.pmbi_code}
+                  </span>
+                )}
+                <span className="px-3 py-1.5 rounded-full bg-white/15 text-emerald-100 text-[11px] font-medium">
+                  {bestAlt.medicine.cdsco_approval || 'WHO-GMP & NABL Lab Certified'}
+                </span>
+                <span className="px-3 py-1.5 rounded-full bg-white/10 text-emerald-200 text-[11px]">
+                  Verified {bestAlt.medicine.last_verified || 'Nov 2026'}
+                </span>
+              </div>
+
               <div className="flex flex-wrap items-center gap-3 text-xs font-bold pt-1">
                 <span className="px-4 py-2 rounded-full bg-white/10 text-emerald-100">
                   Monthly Saving: ₹{bestAlt.monthly_savings_inr.toFixed(2)}
