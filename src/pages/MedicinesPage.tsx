@@ -78,7 +78,7 @@ export const MedicinesPage: React.FC = () => {
   }, [query, selectedCategory, onlyGenerics]);
 
   return (
-    <div className="flex flex-col gap-12 sm:gap-16 pb-20">
+    <div className="flex flex-col gap-6 sm:gap-8 pb-20">
       {/* Search Header */}
       <SearchHeader
         query={query}
@@ -91,10 +91,10 @@ export const MedicinesPage: React.FC = () => {
       />
 
       {/* Results Section */}
-      <section className="max-w-7xl w-full mx-auto px-4 sm:px-8 flex flex-col gap-10" aria-label="Medicine catalog results">
+      <section className="max-w-7xl w-full mx-auto px-4 sm:px-8 flex flex-col gap-6" aria-label="Medicine catalog results">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               {selectedCategory === 'All' ? 'All Formulations' : `${selectedCategory} Formulations`}
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 font-medium">
@@ -111,7 +111,7 @@ export const MedicinesPage: React.FC = () => {
                 setOnlyGenerics(false);
                 setSearchParams({});
               }}
-              className="text-xs font-bold text-[#183b28] bg-[#eef5f1] hover:bg-[#d8ebd1] px-5 py-2.5 rounded-full transition-colors min-h-[40px]"
+              className="text-xs font-semibold text-[#183b28] bg-[#eef5f1] hover:bg-[#d8ebd1] px-4 py-2 rounded-full transition-colors"
             >
               Reset All Filters
             </button>
