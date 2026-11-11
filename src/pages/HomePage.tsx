@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, ArrowRight, ShieldCheck, FileText, ShoppingBag, TrendingDown } from 'lucide-react';
+import { Search, ArrowRight, ShieldCheck, TrendingDown } from 'lucide-react';
 import { SEED_MEDICINES } from '../data/seedData';
 import { useBasket } from '../context/BasketContext';
 
@@ -252,44 +252,29 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Two Specialized Feature Banners: Prescription OCR & Savings Ledger */}
+      {/* Quiet Minimalist Exploration Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Prescription Parser Card */}
-          <div className="p-8 sm:p-10 rounded-[32px] bg-white shadow-[0_4px_30px_rgb(0,0,0,0.02)] flex flex-col justify-between gap-6">
-            <div className="flex flex-col gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#eef5f1] text-[#183b28] flex items-center justify-center">
-                <FileText className="w-6 h-6" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Prescription Parser & OCR</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Have a doctor&apos;s slip? Paste the written text or clinical notes directly. Our parser extracts all medication names, matches their active salts, and presents generic equivalents in one view.
-              </p>
-            </div>
+        <div className="p-8 sm:p-12 rounded-[36px] bg-[#f7f8f6] flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col gap-1.5 text-center sm:text-left">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              Have a doctor&apos;s prescription slip?
+            </h3>
+            <p className="text-slate-500 text-xs sm:text-sm">
+              Scan with camera OCR or paste doctor notes to find exact generic equivalents.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
             <Link
               to="/prescription"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold transition-all"
+              className="px-6 py-3 rounded-full bg-[#183b28] text-white font-bold text-xs hover:bg-[#122e1f] transition-all shadow-xs"
             >
-              Open Prescription Scanner <ArrowRight className="w-4 h-4" />
+              Scan Prescription
             </Link>
-          </div>
-
-          {/* Family Savings Calculator Card */}
-          <div className="p-8 sm:p-10 rounded-[32px] bg-white shadow-[0_4px_30px_rgb(0,0,0,0.02)] flex flex-col justify-between gap-6">
-            <div className="flex flex-col gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#fffbf0] text-amber-700 flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Family Savings Transition Slip</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Calculate exactly how much your family spends each month versus an optimized Jan Aushadhi basket. Export or print a neat consultation slip to discuss with your healthcare provider.
-              </p>
-            </div>
             <Link
-              to="/savings"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#0b111e] hover:bg-black text-white text-xs font-bold transition-all"
+              to="/medicines"
+              className="px-6 py-3 rounded-full bg-white text-slate-800 font-bold text-xs hover:bg-slate-100 transition-colors shadow-2xs"
             >
-              View Savings Calculator <ArrowRight className="w-4 h-4" />
+              Browse All Salts
             </Link>
           </div>
         </div>
