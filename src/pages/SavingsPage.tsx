@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Printer, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Printer, Download, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useBasket } from '../context/BasketContext';
 import { SEED_MEDICINES } from '../data/seedData';
 import { calculateBasketSummary } from '../utils/matcher';
+import { generateTransitionSlipPDF } from '../utils/pdfGenerator';
 
 export const SavingsPage: React.FC = () => {
   const { basket, updateStrips, removeItem, clearBasket } = useBasket();
@@ -14,6 +15,10 @@ export const SavingsPage: React.FC = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPDF = () => {
+    generateTransitionSlipPDF(summary);
   };
 
   return (
@@ -39,7 +44,7 @@ export const SavingsPage: React.FC = () => {
         </div>
 
         {basket.length > 0 && (
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
             <button
               type="button"
               onClick={clearBasket}
@@ -50,10 +55,18 @@ export const SavingsPage: React.FC = () => {
             <button
               type="button"
               onClick={handlePrint}
+              className="px-5 py-2.5 rounded-full bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold transition-all shadow-xs flex items-center gap-2 border border-slate-200"
+            >
+              <Printer className="w-4 h-4 text-slate-600" />
+              Print Slip
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
               className="px-6 py-2.5 rounded-full bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2"
             >
-              <Printer className="w-4 h-4 text-emerald-300" />
-              Print Consultation Slip
+              <Download className="w-4 h-4 text-emerald-300" />
+              Download PDF Slip
             </button>
           </div>
         )}
