@@ -77,9 +77,15 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
                 {medicine.cdsco_approval || 'CDSCO Verified'}
               </span>
             </div>
+            {medicine.nppa_ceiling_price && (
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-slate-400 font-medium">NPPA DPCO Ceiling</span>
+                <span className="font-medium text-slate-700">₹{medicine.nppa_ceiling_price.toFixed(2)}/unit</span>
+              </div>
+            )}
             <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/50">
               <span className="text-slate-400">NPPA Gazette Recency</span>
-              <span className="font-mono text-slate-500 text-[10px]">{medicine.last_verified || 'Nov 2026'}</span>
+              <span className="font-mono text-slate-500 text-[10px]">{medicine.nppa_gazette_ref || medicine.last_verified || 'Nov 2026'}</span>
             </div>
           </div>
         </details>

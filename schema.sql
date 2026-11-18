@@ -36,6 +36,8 @@ CREATE TABLE medicines (
     normalized_salt_key TEXT NOT NULL, -- Canonical string: sorted active molecules + strengths + form + release
     indications TEXT, -- Common usages: "High blood pressure", "Type 2 diabetes", etc.
     prescription_required INTEGER NOT NULL DEFAULT 1,
+    nppa_ceiling_price REAL, -- NPPA DPCO statutory price ceiling per unit in INR
+    nppa_gazette_ref TEXT, -- Reference Gazette S.O. number and revision date
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

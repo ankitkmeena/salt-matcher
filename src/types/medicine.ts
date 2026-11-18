@@ -19,6 +19,8 @@ export interface Medicine {
   pmbi_code?: string;
   last_verified?: string;
   cdsco_approval?: string;
+  nppa_ceiling_price?: number; // NPPA statutory ceiling price per unit
+  nppa_gazette_ref?: string; // Gazette notification order reference
 }
 
 export interface Salt {
