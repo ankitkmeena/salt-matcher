@@ -10,6 +10,7 @@ import { PrescriptionPage } from './pages/PrescriptionPage';
 import { SavingsPage } from './pages/SavingsPage';
 import { EducationPage } from './pages/EducationPage';
 import { FaqPage } from './pages/FaqPage';
+import { StoresPage } from './pages/StoresPage';
 import { AlternativeModal } from './components/AlternativeModal';
 import { ShoppingBag } from 'lucide-react';
 
@@ -33,6 +34,7 @@ const AppLayout: React.FC = () => {
           <Route path="/medicines" element={<MedicinesPage />} />
           <Route path="/prescription" element={<PrescriptionPage />} />
           <Route path="/savings" element={<SavingsPage />} />
+          <Route path="/stores" element={<StoresPage />} />
           <Route path="/education" element={<EducationPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

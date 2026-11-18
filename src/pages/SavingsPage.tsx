@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Printer, Download, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Printer, Download, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft, Share2, MapPin } from 'lucide-react';
 import { useBasket } from '../context/BasketContext';
 import { SEED_MEDICINES } from '../data/seedData';
 import { calculateBasketSummary } from '../utils/matcher';
 import { generateTransitionSlipPDF } from '../utils/pdfGenerator';
+import { ShareSavingsModal } from '../components/ShareSavingsModal';
 
 export const SavingsPage: React.FC = () => {
   const { basket, updateStrips, removeItem, clearBasket } = useBasket();
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const summary = useMemo(() => {
     return calculateBasketSummary(basket, SEED_MEDICINES);
@@ -51,6 +53,14 @@ export const SavingsPage: React.FC = () => {
               className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-bold transition-colors"
             >
               Clear Slip
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareModalOpen(true)}
+              className="px-5 py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-[#183b28] text-xs font-bold transition-all shadow-xs flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4 text-[#27583d]" />
+              Share Savings
             </button>
             <button
               type="button"
@@ -243,14 +253,31 @@ export const SavingsPage: React.FC = () => {
           </div>
 
           {/* Printable Instructions for Doctor/Pharmacist */}
-          <div className="p-6 rounded-3xl bg-[#f8f9fa] flex flex-col gap-2 text-xs text-slate-500 leading-relaxed border border-slate-200/60">
-            <h5 className="font-bold text-slate-700">Patient Instructions for Next Clinic Visit:</h5>
-            <ol className="list-decimal list-inside flex flex-col gap-1 pl-1">
-              <li>Show this printed or mobile slip to your prescribing physician at your next follow-up.</li>
-              <li>Ask: &quot;Doctor, can we switch these to Jan Aushadhi generic equivalents or prescribe by active salt name?&quot;</li>
-              <li>Purchase directly at any of the 10,000+ Pradhan Mantri Bhartiya Janaushadhi Kendras across India.</li>
-            </ol>
+          <div className="p-6 rounded-3xl bg-[#f8f9fa] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-slate-200/60">
+            <div className="flex flex-col gap-2 text-xs text-slate-500 leading-relaxed max-w-2xl">
+              <h5 className="font-bold text-slate-700">Patient Instructions for Next Clinic Visit:</h5>
+              <ol className="list-decimal list-inside flex flex-col gap-1 pl-1">
+                <li>Show this printed or mobile slip to your prescribing physician at your next follow-up.</li>
+                <li>Ask: &quot;Doctor, can we switch these to Jan Aushadhi generic equivalents or prescribe by active salt name?&quot;</li>
+                <li>Purchase directly at any of the 10,000+ Pradhan Mantri Bhartiya Janaushadhi Kendras across India.</li>
+              </ol>
+            </div>
+
+            <Link
+              to="/stores"
+              className="px-6 py-3 rounded-full bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-2 whitespace-nowrap shrink-0"
+            >
+              <MapPin className="w-4 h-4 text-emerald-300" />
+              Locate Jan Aushadhi Kendras
+            </Link>
           </div>
+
+          {/* Share Savings Modal */}
+          <ShareSavingsModal
+            summary={summary}
+            isOpen={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+          />
         </div>
       )}
     </div>

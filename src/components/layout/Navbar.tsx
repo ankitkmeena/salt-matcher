@@ -12,6 +12,7 @@ export const Navbar: React.FC = () => {
     { label: 'Search Salts', path: '/medicines' },
     { label: 'Prescription Parser', path: '/prescription' },
     { label: 'Savings Slip', path: '/savings' },
+    { label: 'Find Kendras', path: '/stores' },
     { label: 'Bioequivalence', path: '/education' },
     { label: 'FAQ', path: '/faq' },
   ];
