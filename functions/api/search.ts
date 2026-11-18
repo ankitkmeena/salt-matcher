@@ -6,32 +6,52 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const url = new URL(context.request.url);
   const q = url.searchParams.get('q')?.trim() || '';
   const category = url.searchParams.get('category')?.trim() || '';
+  const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit') || '12', 10) || 12));
+  const offset = (page - 1) * limit;
 
   // 1. If Cloudflare D1 database binding exists
   if (context.env.DB) {
     try {
-      let query = 'SELECT * FROM medicines WHERE 1=1';
+      let whereClause = ' WHERE 1=1';
       const params: any[] = [];
 
       if (category && category !== 'All') {
-        query += ' AND therapeutic_category = ?';
+        whereClause += ' AND therapeutic_category = ?';
         params.push(category);
       }
 
       if (q) {
-        query += ' AND (name LIKE ? OR brand_name LIKE ? OR composition_summary LIKE ? OR indications LIKE ?)';
+        whereClause += ' AND (name LIKE ? OR brand_name LIKE ? OR composition_summary LIKE ? OR indications LIKE ?)';
         const wild = `%${q}%`;
         params.push(wild, wild, wild, wild);
       }
 
-      query += ' ORDER BY is_jan_aushadhi DESC, price_per_unit ASC LIMIT 50';
+      // Count query to get total matching records
+      const countStmt = context.env.DB.prepare(`SELECT COUNT(*) as total FROM medicines${whereClause}`);
+      const countResult = await countStmt.bind(...params).first<{ total: number }>();
+      const total = countResult?.total || 0;
 
-      const stmt = context.env.DB.prepare(query);
-      const { results } = await stmt.bind(...params).all<Medicine>();
+      // Data query with LIMIT and OFFSET
+      const dataQuery = `SELECT * FROM medicines${whereClause} ORDER BY is_jan_aushadhi DESC, price_per_unit ASC LIMIT ? OFFSET ?`;
+      const dataStmt = context.env.DB.prepare(dataQuery);
+      const { results } = await dataStmt.bind(...params, limit, offset).all<Medicine>();
 
-      return new Response(JSON.stringify({ data: results, source: 'cloudflare-d1' }), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
-      });
+      return new Response(
+        JSON.stringify({
+          data: results,
+          pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+          },
+          source: 'cloudflare-d1',
+        }),
+        {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+        }
+      );
     } catch (err: any) {
       console.error('D1 query error:', err);
     }
@@ -53,7 +73,22 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     );
   }
 
-  return new Response(JSON.stringify({ data: results, source: 'embedded-fallback' }), {
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
-  });
+  const total = results.length;
+  const paginatedResults = results.slice(offset, offset + limit);
+
+  return new Response(
+    JSON.stringify({
+      data: paginatedResults,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+      source: 'embedded-fallback',
+    }),
+    {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+    }
+  );
 };
