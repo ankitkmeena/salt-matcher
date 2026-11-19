@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Medicine } from '../types/medicine';
-import { ShieldAlert, CheckCircle2, ShieldCheck, ArrowRight, Plus, ChevronDown, Check } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, ShieldCheck, ArrowRight, Plus, ChevronDown, Check, Info } from 'lucide-react';
+import { MedicineDetailModal } from './MedicineDetailModal';
 
 interface MedicineCardProps {
   medicine: Medicine;
@@ -15,6 +16,7 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
   onAddToBasket,
   isInBasket = false,
 }) => {
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const isJanAushadhi = medicine.is_jan_aushadhi === 1;
 
   return (
@@ -45,9 +47,19 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
 
         {/* Medicine Name */}
         <div className="flex flex-col gap-1">
-          <h3 className="text-xl font-bold tracking-tight text-slate-900 group-hover:text-[#183b28] transition-colors leading-snug line-clamp-1">
-            {medicine.name}
-          </h3>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 group-hover:text-[#183b28] transition-colors leading-snug line-clamp-1">
+              {medicine.name}
+            </h3>
+            <button
+              type="button"
+              onClick={() => setIsDetailOpen(true)}
+              className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              title="View full pharmacology & instructions"
+            >
+              <Info className="w-4 h-4" />
+            </button>
+          </div>
           <p className="text-xs text-slate-500 font-medium leading-relaxed line-clamp-1">
             {medicine.composition_summary}
           </p>
@@ -132,6 +144,15 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Deep Medicine Details & Instructions Modal */}
+      <MedicineDetailModal
+        medicine={medicine}
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        onAddToBasket={onAddToBasket}
+        isInBasket={isInBasket}
+      />
     </article>
   );
 };

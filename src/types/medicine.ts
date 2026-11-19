@@ -21,6 +21,11 @@ export interface Medicine {
   cdsco_approval?: string;
   nppa_ceiling_price?: number; // NPPA statutory ceiling price per unit
   nppa_gazette_ref?: string; // Gazette notification order reference
+  side_effects?: string;
+  how_to_use?: string;
+  storage?: string;
+  food_interaction?: string;
+  strength_variants?: string[];
 }
 
 export interface Salt {
