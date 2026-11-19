@@ -8,12 +8,13 @@ import {
   Navigation, 
   CheckCircle2, 
   Building2, 
-  Sparkles,
+  Sparkles, 
   ExternalLink,
   Loader2,
   Database
 } from 'lucide-react';
 import { JAN_AUSHADHI_STORES, JanAushadhiStore } from '../data/storesData';
+import { Pagination } from '../components/Pagination';
 
 const ALL_INDIAN_STATES = [
   'All',
@@ -56,21 +57,28 @@ const ALL_INDIAN_STATES = [
   'West Bengal'
 ];
 
+const STORES_PER_PAGE = 12;
+
 export const StoresPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedState, setSelectedState] = useState<string>('All');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [userLocationState, setUserLocationState] = useState<string | null>(null);
-  
-  // Remote live API state (21,600+ Kendra registry)
+
+  // Live remote registry state (all 21,663 stores)
   const [liveStores, setLiveStores] = useState<JanAushadhiStore[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [liveCount, setLiveCount] = useState<number | null>(null);
 
-  // Debounced API fetch when user searches or picks a state
+  // Query live API with debouncing whenever search or state changes
   useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 on search or filter change
     const trimmed = searchTerm.trim();
-    if (trimmed.length < 3 && selectedState === 'All') {
+
+    // If query is empty and state is All, fall back to instant verified local seed stores
+    if (!trimmed && selectedState === 'All') {
       setLiveStores(null);
+      setLiveCount(null);
       return;
     }
 
@@ -81,7 +89,7 @@ export const StoresPage: React.FC = () => {
         const params = new URLSearchParams();
         if (isPincode) {
           params.set('pincode', trimmed);
-        } else if (trimmed.length >= 3) {
+        } else if (trimmed) {
           params.set('q', trimmed);
         }
         if (selectedState !== 'All') {
@@ -92,7 +100,7 @@ export const StoresPage: React.FC = () => {
         if (res.ok) {
           const json = (await res.json()) as { count?: number; stores?: any[] };
           const items = json.stores || [];
-          setLiveCount(json.count || items.length);
+          setLiveCount(json.count ?? items.length);
 
           const mapped: JanAushadhiStore[] = items.map((s: any, idx: number) => ({
             id: `live-${s.kendra_code || idx}`,
@@ -116,13 +124,13 @@ export const StoresPage: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-    }, 350);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchTerm, selectedState]);
 
-  // Display stores: use live remote results when available, else filter verified seed directory
-  const displayStores = useMemo(() => {
+  // Combined stores: live remote stores when searching, else local verified seed stores
+  const allFilteredStores = useMemo(() => {
     if (liveStores !== null) {
       return liveStores;
     }
@@ -140,6 +148,19 @@ export const StoresPage: React.FC = () => {
       return matchesSearch && matchesState;
     });
   }, [liveStores, searchTerm, selectedState]);
+
+  // Windowed stores for pagination (12 per page)
+  const totalStores = allFilteredStores.length;
+  const totalPages = Math.ceil(totalStores / STORES_PER_PAGE);
+  const currentStores = useMemo(() => {
+    const start = (currentPage - 1) * STORES_PER_PAGE;
+    return allFilteredStores.slice(start, start + STORES_PER_PAGE);
+  }, [allFilteredStores, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 380, behavior: 'smooth' });
+  };
 
   const handleUseLocation = () => {
     if (!navigator.geolocation) {
@@ -168,15 +189,15 @@ export const StoresPage: React.FC = () => {
           </span>
           <span className="text-[10px] font-bold tracking-tight text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-200/50">
             <Database className="w-3 h-3 text-emerald-600" />
-            21,600+ Official Kendras Available
+            21,663 Official Kendras Live
           </span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight">
           Find Jan Aushadhi Kendra Stores
         </h1>
         <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
-          Access the comprehensive national registry of <strong>21,600+ Pradhan Mantri Bhartiya Janaushadhi Kendras</strong> across every state and district. 
-          Search by 6-digit Pincode, city, or district name to contact store managers on WhatsApp or get GPS directions.
+          Access the full national directory of <strong>21,663 Pradhan Mantri Bhartiya Janaushadhi Kendras</strong> across India. 
+          Enter your 6-digit Pincode, district, or choose your state to browse stores, get GPS routes, or enquire on WhatsApp.
         </p>
       </div>
 
@@ -193,7 +214,7 @@ export const StoresPage: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Enter 6-digit Pincode (e.g. 110029, 400028) or City/Area name..."
+            placeholder="Search by 6-digit Pincode (e.g. 110029, 400028, 560002), City, or Landmark..."
             className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[#f8f9fa] border border-transparent focus:border-[#183b28]/30 focus:bg-white text-slate-800 text-sm font-medium outline-none transition-all"
           />
         </div>
@@ -230,12 +251,12 @@ export const StoresPage: React.FC = () => {
         </div>
       )}
 
-      {/* Results Header */}
+      {/* Results Metric Header */}
       <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1">
         <span>
           {liveStores !== null
-            ? `Found ${liveCount || liveStores.length} stores across India`
-            : `Showing ${displayStores.length} verified government Kendra locations`}
+            ? `Found ${liveCount || totalStores} stores across ${selectedState === 'All' ? 'India' : selectedState}`
+            : `Showing ${totalStores} landmark hospital Kendras (Type a pincode or pick a state for all 21,663 stores)`}
         </span>
         <span className="flex items-center gap-1.5 text-emerald-800">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Genuine PMBI Supply
@@ -243,7 +264,7 @@ export const StoresPage: React.FC = () => {
       </div>
 
       {/* Store Grid */}
-      {displayStores.length === 0 ? (
+      {currentStores.length === 0 ? (
         <div className="p-16 rounded-[28px] bg-white text-center flex flex-col items-center justify-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-[#f8f9fa] text-slate-400 flex items-center justify-center">
             <Building2 className="w-8 h-8" />
@@ -265,91 +286,104 @@ export const StoresPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayStores.slice(0, 48).map((store) => {
-            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              `${store.name}, ${store.address}, ${store.city} ${store.pincode}`
-            )}`;
-            const whatsappUrl = store.whatsapp
-              ? `https://wa.me/${store.whatsapp}?text=${encodeURIComponent(
-                  `Namaste, I found your Jan Aushadhi Kendra (${store.kendra_code}) on SaltMatch. Do you have generic medicines in stock?`
-                )}`
-              : null;
+        <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentStores.map((store) => {
+              const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${store.name}, ${store.address}, ${store.city} ${store.pincode}`
+              )}`;
+              const whatsappUrl = store.whatsapp
+                ? `https://wa.me/${store.whatsapp}?text=${encodeURIComponent(
+                    `Namaste, I found your Jan Aushadhi Kendra (${store.kendra_code}) on SaltMatch. Do you have generic medicines in stock?`
+                  )}`
+                : null;
 
-            return (
-              <div
-                key={store.id}
-                className="bg-white rounded-[28px] p-6 flex flex-col justify-between gap-6 shadow-[0_4px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_15px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-slate-100"
-              >
-                <div className="flex flex-col gap-4">
-                  {/* Top Badge */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-[10px] font-bold text-[#183b28] bg-[#eef5f1] px-2.5 py-0.5 rounded-full">
-                      {store.kendra_code}
-                    </span>
-                    <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-emerald-600" />
-                      {store.timings}
-                    </span>
-                  </div>
-
-                  {/* Store Name & Address */}
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="text-lg font-bold text-slate-900 leading-snug tracking-tight">
-                      {store.name}
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed flex items-start gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                      <span>{store.address ? `${store.address}, ` : ''}{store.city}, {store.state} - <strong className="text-slate-700">{store.pincode}</strong></span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Actions */}
-                <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-                  <div className="flex items-center gap-2">
-                    {store.phone ? (
-                      <a
-                        href={`tel:${store.phone.replace(/\s+/g, '')}`}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <Phone className="w-3.5 h-3.5 text-slate-500" />
-                        Call Store
-                      </a>
-                    ) : (
-                      <span className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 text-slate-400 text-xs text-center font-medium">
-                        PMBI Managed
+              return (
+                <div
+                  key={store.id}
+                  className="bg-white rounded-[28px] p-6 flex flex-col justify-between gap-6 shadow-[0_4px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_15px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-slate-100"
+                >
+                  <div className="flex flex-col gap-4">
+                    {/* Top Badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] font-bold text-[#183b28] bg-[#eef5f1] px-2.5 py-0.5 rounded-full">
+                        {store.kendra_code}
                       </span>
-                    )}
+                      <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-emerald-600" />
+                        {store.timings}
+                      </span>
+                    </div>
 
-                    {whatsappUrl && (
-                      <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="py-2.5 px-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                        title="Enquire on WhatsApp"
-                      >
-                        <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-                        WhatsApp
-                      </a>
-                    )}
+                    {/* Store Name & Address */}
+                    <div className="flex flex-col gap-1.5">
+                      <h3 className="text-lg font-bold text-slate-900 leading-snug tracking-tight">
+                        {store.name}
+                      </h3>
+                      <p className="text-xs text-slate-500 leading-relaxed flex items-start gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                        <span>{store.address ? `${store.address}, ` : ''}{store.city}, {store.state} - <strong className="text-slate-700">{store.pincode}</strong></span>
+                      </p>
+                    </div>
                   </div>
 
-                  <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs"
-                  >
-                    <Navigation className="w-3.5 h-3.5 text-emerald-300" />
-                    Get Directions on Maps
-                    <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
-                  </a>
+                  {/* Bottom Actions */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
+                    <div className="flex items-center gap-2">
+                      {store.phone ? (
+                        <a
+                          href={`tel:${store.phone.replace(/\s+/g, '')}`}
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          <Phone className="w-3.5 h-3.5 text-slate-500" />
+                          Call Store
+                        </a>
+                      ) : (
+                        <span className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 text-slate-400 text-xs text-center font-medium">
+                          PMBI Managed
+                        </span>
+                      )}
+
+                      {whatsappUrl && (
+                        <a
+                          href={whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                          title="Enquire on WhatsApp"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          WhatsApp
+                        </a>
+                      )}
+                    </div>
+
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs"
+                    >
+                      <Navigation className="w-3.5 h-3.5 text-emerald-300" />
+                      Get Directions on Maps
+                      <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalStores}
+              pageSize={STORES_PER_PAGE}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
       )}
     </div>
