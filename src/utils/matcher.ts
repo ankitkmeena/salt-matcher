@@ -13,7 +13,34 @@ export function normalizeQuery(query: string): string {
 }
 
 /**
+ * Computes Levenshtein Distance between two strings for typo tolerance
+ */
+export function levenshteinDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return dp[m][n];
+}
+
+/**
  * Searches medicines by name, brand, salt composition, or category
+ * Supports exact term matching and fuzzy typo tolerance
  */
 export function searchMedicines(
   query: string,
@@ -33,9 +60,22 @@ export function searchMedicines(
     }
 
     const searchableString = `${med.name} ${med.brand_name} ${med.composition_summary} ${med.manufacturer} ${med.indications || ''}`.toLowerCase();
+    const tokenWords = searchableString.split(/\s+/);
     
-    // All space-delimited terms must match
-    return terms.every((term) => searchableString.includes(term));
+    // All space-delimited terms must match (either exact substring or fuzzy typo tolerance)
+    return terms.every((term) => {
+      if (searchableString.includes(term)) return true;
+
+      // Fuzzy check against tokens for terms of length >= 4
+      if (term.length >= 4) {
+        return tokenWords.some((word) => {
+          if (Math.abs(word.length - term.length) > 2) return false;
+          const maxDist = term.length > 6 ? 2 : 1;
+          return levenshteinDistance(term, word) <= maxDist;
+        });
+      }
+      return false;
+    });
   });
 }
 

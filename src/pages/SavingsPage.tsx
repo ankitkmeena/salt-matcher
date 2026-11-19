@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Printer, Download, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft, Share2, MapPin } from 'lucide-react';
+import { Printer, Download, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, AlertCircle, ArrowLeft, Share2, MapPin, ShieldAlert } from 'lucide-react';
 import { useBasket } from '../context/BasketContext';
 import { SEED_MEDICINES } from '../data/seedData';
 import { calculateBasketSummary } from '../utils/matcher';
 import { generateTransitionSlipPDF } from '../utils/pdfGenerator';
 import { ShareSavingsModal } from '../components/ShareSavingsModal';
+import { checkDrugInteractions, DetectedInteraction } from '../utils/ddiService';
 
 export const SavingsPage: React.FC = () => {
   const { basket, updateStrips, removeItem, clearBasket } = useBasket();
@@ -14,6 +15,16 @@ export const SavingsPage: React.FC = () => {
   const summary = useMemo(() => {
     return calculateBasketSummary(basket, SEED_MEDICINES);
   }, [basket]);
+
+  // Evaluate Drug-Drug Interactions (DDI) across all medicines in current basket
+  const ddiAlerts: DetectedInteraction[] = useMemo(() => {
+    const medicineList = summary.breakdown.map((item) => ({
+      id: item.medicine.id,
+      name: item.medicine.name,
+      composition_summary: item.medicine.composition_summary
+    }));
+    return checkDrugInteractions(medicineList);
+  }, [summary]);
 
   const handlePrint = () => {
     window.print();
@@ -159,6 +170,57 @@ export const SavingsPage: React.FC = () => {
                 <p>
                   Your list contains medication with a narrow therapeutic range ({summary.nti_warnings.map((w) => w.medicine_name).join(', ')}). While generic equivalents exist and are bioequivalent, blood serum levels (e.g., TSH, INR) must be verified after any brand transition under physician supervision.
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Clinical Drug-Drug Interaction (DDI) Checker Alerts */}
+          {ddiAlerts.length > 0 && (
+            <div className="p-6 sm:p-7 rounded-3xl bg-[#fff5f5] border border-rose-200 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="font-bold text-sm text-rose-950">
+                    Clinical Alert: {ddiAlerts.length} Potential Drug Interaction{ddiAlerts.length > 1 ? 's' : ''} Detected
+                  </h4>
+                  <p className="text-xs text-rose-800/80">
+                    Your monthly basket contains medicines known to interact when co-administered. Review these notes before your physician visit.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                {ddiAlerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className="p-4 rounded-2xl bg-white border border-rose-100 flex flex-col gap-2 text-xs shadow-xs"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900">
+                        {alert.medicine_a_name} ↔ {alert.medicine_b_name}
+                      </span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          alert.severity === 'severe'
+                            ? 'bg-rose-100 text-rose-800'
+                            : alert.severity === 'moderate'
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-blue-50 text-blue-700'
+                        }`}
+                      >
+                        {alert.severity} Risk
+                      </span>
+                    </div>
+                    <p className="text-slate-600 leading-relaxed text-[11px]">
+                      <strong>Effect:</strong> {alert.clinical_effect}
+                    </p>
+                    <div className="p-2.5 rounded-xl bg-slate-50 text-slate-700 text-[11px] border border-slate-100">
+                      <strong>Physician Action:</strong> {alert.recommendation}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

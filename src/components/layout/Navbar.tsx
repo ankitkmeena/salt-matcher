@@ -1,20 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { ShieldCheck, ShoppingBag, FileText, Menu, X, ArrowUpRight } from 'lucide-react';
+import { ShieldCheck, ShoppingBag, FileText, Menu, X, ArrowUpRight, Languages } from 'lucide-react';
 import { useBasket } from '../../context/BasketContext';
+import { getSavedLanguage, saveLanguage, Language, TRANSLATIONS } from '../../utils/i18n';
 
 export const Navbar: React.FC = () => {
   const { totalItemsCount } = useBasket();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [lang, setLang] = useState<Language>('en');
   const location = useLocation();
 
+  useEffect(() => {
+    setLang(getSavedLanguage());
+  }, []);
+
+  const toggleLanguage = () => {
+    const nextLang = lang === 'en' ? 'hi' : 'en';
+    setLang(nextLang);
+    saveLanguage(nextLang);
+    window.dispatchEvent(new Event('languagechange'));
+  };
+
+  const t = TRANSLATIONS[lang];
+
   const navLinks = [
-    { label: 'Search Salts', path: '/medicines' },
-    { label: 'Prescription Parser', path: '/prescription' },
-    { label: 'Savings Slip', path: '/savings' },
-    { label: 'Find Kendras', path: '/stores' },
-    { label: 'Bioequivalence', path: '/education' },
-    { label: 'FAQ', path: '/faq' },
+    { label: t.searchSalts, path: '/medicines' },
+    { label: t.prescriptionParser, path: '/prescription' },
+    { label: t.savingsSlip, path: '/savings' },
+    { label: t.findKendras, path: '/stores' },
+    { label: t.bioequivalence, path: '/education' },
+    { label: t.faq, path: '/faq' },
   ];
 
   return (
@@ -62,13 +77,24 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right CTA Area */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Language Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-200/60"
+            title="Switch Language / भाषा बदलें"
+          >
+            <Languages className="w-3.5 h-3.5 text-[#183b28]" />
+            <span>{lang === 'en' ? 'हिन्दी' : 'English'}</span>
+          </button>
+
           <Link
             to="/prescription"
             className="hidden sm:inline-flex items-center gap-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 px-4 py-2.5 rounded-full transition-all shadow-[0_2px_12px_rgba(0,0,0,0.03)] min-h-[40px]"
           >
             <FileText className="w-4 h-4 text-[#183b28]" />
-            Scan Rx
+            {t.scanRx}
           </Link>
 
           <Link

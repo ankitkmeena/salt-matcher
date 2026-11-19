@@ -18,6 +18,8 @@ import { Medicine } from '../types/medicine';
 import { parsePrescriptionText, findAlternatives } from '../utils/matcher';
 import { recognizePrescriptionImage, OcrProgress } from '../utils/ocrService';
 import { useBasket } from '../context/BasketContext';
+import { ReceiptAuditorModal } from '../components/ReceiptAuditorModal';
+import { ReceiptText } from 'lucide-react';
 
 const SAMPLE_PRESCRIPTIONS = [
   {
@@ -48,6 +50,7 @@ export const PrescriptionPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'upload' | 'text'>('upload');
   const [text, setText] = useState('');
   const [detectedMedicines, setDetectedMedicines] = useState<Medicine[]>([]);
+  const [auditorModalOpen, setAuditorModalOpen] = useState(false);
   const [hasParsed, setHasParsed] = useState(false);
   const [addedAll, setAddedAll] = useState(false);
 
@@ -148,6 +151,15 @@ export const PrescriptionPage: React.FC = () => {
           <Lock className="w-3 h-3 text-emerald-600" />
           <span>100% On-Device OCR • No patient photos saved or uploaded</span>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setAuditorModalOpen(true)}
+          className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-all border border-amber-200/60 shadow-2xs"
+        >
+          <ReceiptText className="w-4 h-4 text-amber-700" />
+          Audit Pharmacy Bill Against NPPA Price Ceilings
+        </button>
       </div>
 
       {/* Main Workspace */}
@@ -441,6 +453,12 @@ export const PrescriptionPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Chemist Receipt Auditor Modal */}
+      <ReceiptAuditorModal
+        isOpen={auditorModalOpen}
+        onClose={() => setAuditorModalOpen(false)}
+      />
     </div>
   );
 };
