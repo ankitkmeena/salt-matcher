@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, X, Sparkles, ChevronDown, Check, Filter } from 'lucide-react';
+import { useTranslation } from '../utils/i18n';
 
 interface SearchHeaderProps {
   query: string;
@@ -30,6 +31,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
   onlyGenerics,
   onToggleOnlyGenerics,
 }) => {
+  const { t } = useTranslation();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -57,14 +59,14 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         <div className="max-w-3xl mx-auto text-center flex flex-col items-center gap-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#eef5f1] text-[#183b28]">
             <Sparkles className="w-3.5 h-3.5 text-[#27583d] shrink-0" />
-            <span>50+ Verified Bioequivalent Formulations</span>
+            <span>150+ {t.verifiedFormulations}</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">
-            Medicine &amp; Salt Catalog
+            {t.searchSalts}
           </h1>
           <p className="text-slate-500 text-xs sm:text-sm max-w-lg leading-relaxed">
-            Search by brand name or active pharmaceutical ingredient to find verified Jan Aushadhi generic equivalents.
+            {t.heroSubtitle}
           </p>
         </div>
 
@@ -78,7 +80,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
                 type="search"
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
-                placeholder="Search brand (Augmentin, Telma) or chemical salt (Metformin, Amoxicillin)..."
+                placeholder={t.searchPlaceholder}
                 className="w-full py-2 px-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 bg-transparent border-0 focus:outline-hidden"
               />
               {query && (

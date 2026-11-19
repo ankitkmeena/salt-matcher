@@ -1,27 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, ShoppingBag, FileText, Menu, X, ArrowUpRight, Languages } from 'lucide-react';
 import { useBasket } from '../../context/BasketContext';
-import { getSavedLanguage, saveLanguage, Language, TRANSLATIONS } from '../../utils/i18n';
+import { useTranslation } from '../../utils/i18n';
 
 export const Navbar: React.FC = () => {
   const { totalItemsCount } = useBasket();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Language>('en');
+  const { lang, t, setLanguage } = useTranslation();
   const location = useLocation();
 
-  useEffect(() => {
-    setLang(getSavedLanguage());
-  }, []);
-
   const toggleLanguage = () => {
-    const nextLang = lang === 'en' ? 'hi' : 'en';
-    setLang(nextLang);
-    saveLanguage(nextLang);
-    window.dispatchEvent(new Event('languagechange'));
+    setLanguage(lang === 'en' ? 'hi' : 'en');
   };
-
-  const t = TRANSLATIONS[lang];
 
   const navLinks = [
     { label: t.searchSalts, path: '/medicines' },

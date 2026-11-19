@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Search, ArrowRight, ShieldCheck, TrendingDown } from 'lucide-react';
 import { SEED_MEDICINES } from '../data/seedData';
 import { useBasket } from '../context/BasketContext';
+import { useTranslation } from '../utils/i18n';
 
 const POPULAR_SEARCHES = ['Metformin', 'Amoxicillin', 'Telmisartan', 'Atorvastatin', 'Paracetamol', 'Pantoprazole'];
 
@@ -40,6 +41,7 @@ export const HomePage: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
   const { openComparison } = useBasket();
+  const { t } = useTranslation();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,18 +68,18 @@ export const HomePage: React.FC = () => {
         {/* Subtle pill tag */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#eef5f1] text-[#183b28] text-xs font-semibold mb-6 shadow-2xs">
           <ShieldCheck className="w-4 h-4 text-[#183b28]" />
-          <span>India&apos;s Independent Chemical Salt Matcher</span>
+          <span>{t.heroTag}</span>
         </div>
 
         {/* Editorial Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-slate-900 max-w-4xl leading-[1.08] mb-6">
-          Identical active molecules. <br className="hidden sm:inline" />
-          <span className="text-[#183b28]">A fraction of the branded price.</span>
+          {t.heroTitle} <br className="hidden sm:inline" />
+          <span className="text-[#183b28]">{t.heroTitleHighlight}</span>
         </h1>
 
         {/* Subhead with comfortable line measure */}
         <p className="text-slate-500 text-base sm:text-xl max-w-[62ch] mx-auto leading-relaxed mb-10">
-          Chronic patients and families spend thousands every month on branded medications that have identical CDSCO-certified generic equivalents. Find verified Jan Aushadhi and generic substitutes instantly.
+          {t.heroSubtitle}
         </p>
 
         {/* Scandinavian Pill Search Bar */}
@@ -92,20 +94,20 @@ export const HomePage: React.FC = () => {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search medicine brand or chemical salt (e.g. Augmentin, Metformin)..."
+            placeholder={t.searchPlaceholder}
             className="flex-1 bg-transparent border-none text-slate-900 placeholder-slate-400 text-sm sm:text-base focus:outline-hidden font-medium"
           />
           <button
             type="submit"
             className="bg-[#183b28] hover:bg-[#122e1f] text-white px-6 sm:px-8 py-3 rounded-full text-xs sm:text-sm font-bold tracking-tight transition-all active:scale-95 shadow-xs"
           >
-            Find Salt
+            {t.searchSalts}
           </button>
         </form>
 
         {/* Popular searches pills */}
         <div className="mt-5 flex items-center justify-center flex-wrap gap-2 text-xs text-slate-500">
-          <span className="text-slate-400 font-medium mr-1">Popular molecules:</span>
+          <span className="text-slate-400 font-medium mr-1">{t.popularSearches}:</span>
           {POPULAR_SEARCHES.map((term) => (
             <button
               key={term}

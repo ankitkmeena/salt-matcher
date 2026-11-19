@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { JAN_AUSHADHI_STORES, JanAushadhiStore } from '../data/storesData';
 import { Pagination } from '../components/Pagination';
+import { useTranslation } from '../utils/i18n';
 
 const ALL_INDIAN_STATES = [
   'All',
@@ -60,6 +61,7 @@ const ALL_INDIAN_STATES = [
 const STORES_PER_PAGE = 12;
 
 export const StoresPage: React.FC = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedState, setSelectedState] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -185,7 +187,7 @@ export const StoresPage: React.FC = () => {
       <div className="flex flex-col gap-3 max-w-3xl">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#183b28] bg-[#eef5f1] px-4 py-1.5 rounded-full shadow-2xs w-fit">
-            Government Jan Aushadhi Network
+            {t.kendraNetwork}
           </span>
           <span className="text-[10px] font-bold tracking-tight text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-200/50">
             <Database className="w-3 h-3 text-emerald-600" />
@@ -193,11 +195,10 @@ export const StoresPage: React.FC = () => {
           </span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight">
-          Find Jan Aushadhi Kendra Stores
+          {t.findKendrasTitle}
         </h1>
         <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
-          Access the full national directory of <strong>21,663 Pradhan Mantri Bhartiya Janaushadhi Kendras</strong> across India. 
-          Enter your 6-digit Pincode, district, or choose your state to browse stores, get GPS routes, or enquire on WhatsApp.
+          {t.kendraSubtitle}
         </p>
       </div>
 
@@ -214,7 +215,7 @@ export const StoresPage: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by 6-digit Pincode (e.g. 110029, 400028, 560002), City, or Landmark..."
+            placeholder={t.pincodePlaceholder}
             className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[#f8f9fa] border border-transparent focus:border-[#183b28]/30 focus:bg-white text-slate-800 text-sm font-medium outline-none transition-all"
           />
         </div>
@@ -239,7 +240,7 @@ export const StoresPage: React.FC = () => {
             className="px-5 py-3.5 rounded-2xl bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 shadow-sm"
           >
             <Navigation className="w-3.5 h-3.5 text-emerald-300" />
-            Near Me
+            {t.nearMe}
           </button>
         </div>
       </div>
@@ -259,7 +260,7 @@ export const StoresPage: React.FC = () => {
             : `Showing ${totalStores} landmark hospital Kendras (Type a pincode or pick a state for all 21,663 stores)`}
         </span>
         <span className="flex items-center gap-1.5 text-emerald-800">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Genuine PMBI Supply
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {t.genuineSupply}
         </span>
       </div>
 
@@ -269,7 +270,7 @@ export const StoresPage: React.FC = () => {
           <div className="w-16 h-16 rounded-2xl bg-[#f8f9fa] text-slate-400 flex items-center justify-center">
             <Building2 className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-slate-800">No Kendra Found for &quot;{searchTerm}&quot;</h3>
+          <h3 className="text-xl font-bold text-slate-800">{t.noStoresFound} &quot;{searchTerm}&quot;</h3>
           <p className="text-xs text-slate-500 max-w-sm">
             Try searching with a valid 6-digit postal pincode, district name, or choose a specific state.
           </p>
@@ -336,7 +337,7 @@ export const StoresPage: React.FC = () => {
                           className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
                         >
                           <Phone className="w-3.5 h-3.5 text-slate-500" />
-                          Call Store
+                          {t.callStore}
                         </a>
                       ) : (
                         <span className="flex-1 py-2.5 px-3 rounded-xl bg-slate-50 text-slate-400 text-xs text-center font-medium">
@@ -353,7 +354,7 @@ export const StoresPage: React.FC = () => {
                           title="Enquire on WhatsApp"
                         >
                           <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-                          WhatsApp
+                          {t.whatsappEnquiry}
                         </a>
                       )}
                     </div>
@@ -365,7 +366,7 @@ export const StoresPage: React.FC = () => {
                       className="w-full py-2.5 px-4 rounded-xl bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs"
                     >
                       <Navigation className="w-3.5 h-3.5 text-emerald-300" />
-                      Get Directions on Maps
+                      {t.getDirections}
                       <ExternalLink className="w-3 h-3 opacity-60 ml-0.5" />
                     </a>
                   </div>

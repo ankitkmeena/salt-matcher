@@ -8,6 +8,7 @@ import { SEED_MEDICINES } from '../data/seedData';
 import { searchMedicines } from '../utils/matcher';
 import { Sparkles } from 'lucide-react';
 import { useBasket } from '../context/BasketContext';
+import { useTranslation } from '../utils/i18n';
 
 const CATEGORIES = [
   'All',
@@ -16,14 +17,18 @@ const CATEGORIES = [
   'Cardiovascular',
   'Gastrointestinal',
   'Antibiotic',
-  'Thyroid',
+  'Oncology',
+  'Nephrology',
+  'Neurology',
   'Pain & Analgesic',
   'Respiratory',
+  'Thyroid',
 ];
 
 const ITEMS_PER_PAGE = 12;
 
 export const MedicinesPage: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get('q') || '';
   const categoryParam = searchParams.get('category') || 'All';
@@ -148,10 +153,10 @@ export const MedicinesPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-0.5">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              {selectedCategory === 'All' ? 'All Formulations' : `${selectedCategory} Formulations`}
+              {selectedCategory === 'All' ? t.allFormulations : `${selectedCategory} Formulations`}
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 font-medium">
-              Showing {totalItems} verified pharmaceutical formulation{totalItems === 1 ? '' : 's'}
+              Showing {totalItems} {t.verifiedFormulations}
               {totalPages > 1 && ` • Page ${validatedPage} of ${totalPages}`}
             </p>
           </div>
@@ -168,7 +173,7 @@ export const MedicinesPage: React.FC = () => {
               }}
               className="text-xs font-semibold text-[#183b28] bg-[#eef5f1] hover:bg-[#d8ebd1] px-4 py-2 rounded-full transition-colors"
             >
-              Reset All Filters
+              {t.resetFilters}
             </button>
           )}
         </div>
@@ -178,9 +183,9 @@ export const MedicinesPage: React.FC = () => {
             <div className="w-16 h-16 rounded-3xl bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
               <Sparkles className="w-8 h-8" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 tracking-tight">No matching medicines found</h3>
+            <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{t.noMedsFound}</h3>
             <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-              Try searching for the active salt name (e.g. &quot;Metformin&quot;, &quot;Amoxicillin&quot;) or explore one of the condition categories above.
+              {t.noMedsDesc}
             </p>
           </div>
         ) : (
