@@ -7,8 +7,10 @@ import { calculateBasketSummary } from '../utils/matcher';
 import { generateTransitionSlipPDF } from '../utils/pdfGenerator';
 import { ShareSavingsModal } from '../components/ShareSavingsModal';
 import { checkDrugInteractions, DetectedInteraction } from '../utils/ddiService';
+import { useTranslation } from '../utils/i18n';
 
 export const SavingsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { basket, updateStrips, removeItem, clearBasket, savedSlips, saveCurrentSlip, loadSavedSlip, deleteSavedSlip } = useBasket();
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -54,10 +56,10 @@ export const SavingsPage: React.FC = () => {
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Medicine Catalog
           </Link>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#183b28] bg-[#eef5f1] px-4 py-1.5 rounded-full shadow-2xs w-fit">
-            Family Healthcare Ledger
+            {t.familyLedger}
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight">
-            Prescription Transition Slip
+            {t.slipTitle}
           </h1>
           <p className="text-slate-500 text-sm sm:text-base max-w-[56ch] leading-relaxed">
             Review your monthly prescription costs versus verified Jan Aushadhi generic equivalents, and print a consultation slip for your doctor.
@@ -73,7 +75,7 @@ export const SavingsPage: React.FC = () => {
               title="Save this prescription slip for later"
             >
               <BookmarkPlus className="w-4 h-4 text-emerald-700" />
-              {savedSuccess ? 'Saved!' : 'Save Slip'}
+              {savedSuccess ? 'Saved!' : t.saveSlip}
             </button>
             {savedSlips.length > 0 && (
               <button
@@ -82,7 +84,7 @@ export const SavingsPage: React.FC = () => {
                 className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5"
               >
                 <History className="w-4 h-4 text-slate-500" />
-                History ({savedSlips.length})
+                {t.savedSlips} ({savedSlips.length})
               </button>
             )}
             <button
@@ -90,7 +92,7 @@ export const SavingsPage: React.FC = () => {
               onClick={clearBasket}
               className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-bold transition-colors"
             >
-              Clear Slip
+              {t.clearSlip}
             </button>
             <button
               type="button"
@@ -98,7 +100,7 @@ export const SavingsPage: React.FC = () => {
               className="px-5 py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-[#183b28] text-xs font-bold transition-all shadow-xs flex items-center gap-2"
             >
               <Share2 className="w-4 h-4 text-[#27583d]" />
-              Share Savings
+              {t.shareSavings}
             </button>
             <button
               type="button"
@@ -106,7 +108,7 @@ export const SavingsPage: React.FC = () => {
               className="px-5 py-2.5 rounded-full bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold transition-all shadow-xs flex items-center gap-2 border border-slate-200"
             >
               <Printer className="w-4 h-4 text-slate-600" />
-              Print Slip
+              {t.printSlip}
             </button>
             <button
               type="button"
@@ -114,7 +116,7 @@ export const SavingsPage: React.FC = () => {
               className="px-6 py-2.5 rounded-full bg-[#183b28] hover:bg-[#122e1f] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2"
             >
               <Download className="w-4 h-4 text-emerald-300" />
-              Download PDF Slip
+              {t.downloadPdf}
             </button>
           </div>
         )}
@@ -206,25 +208,25 @@ export const SavingsPage: React.FC = () => {
           {/* High-Impact Scandinavian Metrics Banner */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-8 sm:p-10 rounded-[32px] bg-[#183b28] text-white shadow-xl">
             <div className="flex flex-col gap-1">
-              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">Current Branded Spend</span>
+              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">{t.currentSpend}</span>
               <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">₹{summary.total_current_monthly.toFixed(0)}</span>
               <span className="text-[11px] text-emerald-200/60 font-medium">per month</span>
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">Jan Aushadhi Generic Spend</span>
+              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">{t.genericSpend}</span>
               <span className="text-3xl sm:text-4xl font-extrabold text-emerald-300 tracking-tight">₹{summary.total_optimized_monthly.toFixed(0)}</span>
               <span className="text-[11px] text-emerald-200/60 font-medium">per month</span>
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">Monthly Family Savings</span>
+              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">{t.monthlySavings}</span>
               <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">₹{summary.monthly_savings.toFixed(0)}</span>
               <span className="text-[11px] text-emerald-300 font-semibold">{summary.overall_savings_percentage}% saved</span>
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">Projected Annual Savings</span>
+              <span className="text-emerald-300/80 text-xs font-semibold uppercase tracking-wider">{t.annualSavings}</span>
               <span className="text-3xl sm:text-4xl font-extrabold text-amber-300 tracking-tight">₹{summary.annual_savings.toFixed(0)}</span>
               <span className="text-[11px] text-amber-200/80 font-medium">per year</span>
             </div>

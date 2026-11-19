@@ -1,0 +1,24 @@
+{
+  "name": "SaltMatch — Jan Aushadhi & Generic Medicine Matcher",
+  "short_name": "SaltMatch",
+  "description": "Find exact active salt matches and low-cost Jan Aushadhi generic alternatives for branded medicines in India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#183b28",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
