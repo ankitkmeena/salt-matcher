@@ -4,6 +4,14 @@ import { SEED_MEDICINES } from '../data/seedData';
 import { findAlternatives } from '../utils/matcher';
 
 const LOCAL_STORAGE_BASKET_KEY = 'saltmatch_rx_basket_v2';
+const LOCAL_STORAGE_SLIPS_KEY = 'saltmatch_saved_slips_v1';
+
+interface SavedPrescriptionSlip {
+  id: string;
+  name: string;
+  date: string;
+  items: BasketItem[];
+}
 
 interface BasketContextType {
   basket: BasketItem[];
@@ -14,6 +22,12 @@ interface BasketContextType {
   importMedicines: (medicines: Medicine[]) => void;
   totalItemsCount: number;
   isInBasket: (medicineId: number) => boolean;
+
+  // Saved Slips / Prescription History
+  savedSlips: SavedPrescriptionSlip[];
+  saveCurrentSlip: (name?: string) => void;
+  loadSavedSlip: (slipId: string) => void;
+  deleteSavedSlip: (slipId: string) => void;
   
   // Alternative comparison modal state
   selectedComparison: AlternativeComparison | null;
@@ -44,6 +58,16 @@ export const BasketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     return initial;
   });
 
+  const [savedSlips, setSavedSlips] = useState<SavedPrescriptionSlip[]>(() => {
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_SLIPS_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.warn('Failed to parse saved slips from localStorage', e);
+    }
+    return [];
+  });
+
   const [selectedComparison, setSelectedComparison] = useState<AlternativeComparison | null>(null);
 
   useEffect(() => {
@@ -53,6 +77,36 @@ export const BasketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       console.warn('Failed to save basket to localStorage', e);
     }
   }, [basket]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_SLIPS_KEY, JSON.stringify(savedSlips));
+    } catch (e) {
+      console.warn('Failed to save slips to localStorage', e);
+    }
+  }, [savedSlips]);
+
+  const saveCurrentSlip = (name?: string) => {
+    if (basket.length === 0) return;
+    const newSlip: SavedPrescriptionSlip = {
+      id: `slip-${Date.now()}`,
+      name: name?.trim() || `Prescription Slip (${new Date().toLocaleDateString('en-IN')})`,
+      date: new Date().toISOString(),
+      items: [...basket],
+    };
+    setSavedSlips((prev) => [newSlip, ...prev.slice(0, 9)]);
+  };
+
+  const loadSavedSlip = (slipId: string) => {
+    const target = savedSlips.find((s) => s.id === slipId);
+    if (target) {
+      setBasket([...target.items]);
+    }
+  };
+
+  const deleteSavedSlip = (slipId: string) => {
+    setSavedSlips((prev) => prev.filter((s) => s.id !== slipId));
+  };
 
   const addToBasket = (med: Medicine) => {
     setBasket((prev) => {
@@ -135,6 +189,10 @@ export const BasketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         selectedComparison,
         openComparison,
         closeComparison,
+        savedSlips,
+        saveCurrentSlip,
+        loadSavedSlip,
+        deleteSavedSlip,
       }}
     >
       {children}
