@@ -53,6 +53,11 @@ export const Footer: React.FC = () => {
                   Family Savings Slip
                 </Link>
               </li>
+              <li>
+                <Link to="/stores" className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-emerald-400 font-medium">
+                  Find Jan Aushadhi Stores
+                </Link>
+              </li>
             </ul>
           </div>
 
